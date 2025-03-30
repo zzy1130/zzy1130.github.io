@@ -11,9 +11,6 @@ export default defineConfig({
     vueDevTools(),
   ],
   base: '/frontend/', // 必须与访问路径一致
-  build: {
-    outDir: '../docs' // 构建到上级 docs 目录
-  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))

@@ -8,7 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d dist -b gh-pages -m 'Deploy' -r https://github.com/zzy1130/zzy1130.github.io.git --dest frontend"
   },
   "dependencies": {
     "vue": "^3.5.13"

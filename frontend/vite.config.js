@@ -6,6 +6,7 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: "/frontend/",
   plugins: [
     vue(),
     vueDevTools(),
@@ -16,9 +17,3 @@ export default defineConfig({
     },
   },
 })
-
-// module.exports = {
-//   publicPath: process.env.NODE_ENV === 'production'
-//     ? '/frontend/'  // 替换为你的GitHub仓库名
-//     : '/'
-// }

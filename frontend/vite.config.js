@@ -10,7 +10,7 @@ export default defineConfig({
     vue(),
     vueDevTools(),
   ],
-  base: '/frontend/', // 必须与访问路径一致
+  base: '/robustness/', // 必须与访问路径一致
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))

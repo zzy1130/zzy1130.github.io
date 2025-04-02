@@ -15,6 +15,10 @@ export default {
       edges_1: [],
       otherEdges: [],
       rankEdg: false,
+      // apiBaseUrl: process.env.NODE_ENV === 'development' 
+      //   ? 'http://localhost:5000' 
+      //   : '/api2',
+      apiBaseUrl: 'https://wusiqi.art/api2',
     };
   },
   methods: {
@@ -32,7 +36,7 @@ export default {
     },
     async visualize() {
       try {
-        const response = await fetch('http://localhost:5000/parse-matrix', {
+        const response = await fetch(`${this.apiBaseUrl}/parse-matrix`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -40,22 +44,6 @@ export default {
           body: JSON.stringify({ matrix: this.matrixInput, alpha: this.alpha, inx: 'visualize'
            }),
         });
-          // const message = await response.json();
-          // console.log("Message: ", message.message);
-          // if (message.error) {
-          //   alert(message.error);
-          //   return;
-          // }
-          // else {
-          //     // this.pureNetPath = '/pure_network.html';
-          //     // Get the HTML file as a Blob
-          //     const blob = await response.blob();
-          //     const url = URL.createObjectURL(blob);
-
-          //     // Use it directly in iframe (no need to save to public/)
-          //     this.pureNetPath = url;
-          //     this.showPureNetwork = true;
-          // }
           if (!response.ok) {
             const error = await response.json();
             throw new Error(error.error || "Failed to generate visualization");
@@ -79,7 +67,7 @@ export default {
     },
     async analyze() {
       try {
-        const response = await fetch('http://localhost:5000/parse-matrix', {
+        const response = await fetch(`${this.apiBaseUrl}/parse-matrix`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

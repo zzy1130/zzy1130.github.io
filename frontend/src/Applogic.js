@@ -15,10 +15,10 @@ export default {
       edges_1: [],
       otherEdges: [],
       rankEdg: false,
-      // apiBaseUrl: process.env.NODE_ENV === 'development' 
-      //   ? 'http://localhost:5000' 
-      //   : '/api2',
-      apiBaseUrl: 'https://wusiqi.art/api2',
+      apiBaseUrl: process.env.NODE_ENV === 'development' 
+        ? 'http://localhost:5000' 
+        : '/api2',
+      // apiBaseUrl: 'https://wusiqi.art/api2',
     };
   },
   methods: {

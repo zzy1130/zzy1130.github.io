@@ -9,12 +9,12 @@
       <div class="general-container">
         <div class="left-container">
           <div class="panel top-left">
-            <h2>Enter The Input Matrix</h2>
+            <h2>Enter Transition Rate Matrix</h2>
             <textarea
               v-model="matrixInput"
               rows="50"
               cols="50"
-              placeholder="Enter adjacency matrix or transition rate matrix(e.g., 0 1 0 ...)"
+              placeholder="Enter transition rate matrix(e.g., 0 1 0 ...)"
             ></textarea>
             <div class="alpha-input">
               <p>Target State α:</p>

@@ -19,6 +19,9 @@ export default {
       //   ? 'http://localhost:5000'
       //   : '/api2',
       apiBaseUrl: "https://wusiqi.art/api2",
+      // apiBaseUrl: "http://localhost:5000",
+      robustness: null,
+      invariant: null,
     };
   },
   methods: {
@@ -33,6 +36,8 @@ export default {
       this.edges_1 = [];
       this.otherEdges = [];
       this.rankEdg = false;
+      this.robustness = null;
+      this.invariant = null;
     },
     async visualize() {
       try {
@@ -47,18 +52,25 @@ export default {
             inx: "visualize",
           }),
         });
-        if (!response.ok) {
-          const error = await response.json();
-          throw new Error(error.error || "Failed to generate visualization");
+        const result = await response.json();
+        if (result.error) throw new Error(result.error);
+
+        // Handle the HTML file (if sent as base64/text)
+        if (result.file_data) {
+          const blob = new Blob([result.file_data], { type: "text/html" });
+          const url = URL.createObjectURL(blob);
+          this.pureNetPath = url;
         }
 
-        // Get the HTML file as a Blob
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
-
         // Use it directly in iframe (no need to save to public/)
-        this.pureNetPath = url;
+
         this.showPureNetwork = true;
+        if (result.robust == 1) {
+          this.robustness = "stable";
+        } else {
+          this.robustness = "not stable";
+        }
+        this.invariant = result.invariant;
       } catch (error) {
         console.error("Error parsing matrix:", error);
         alert("Failed to parse matrix. Please try again.");

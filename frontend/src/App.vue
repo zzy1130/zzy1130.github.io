@@ -6,12 +6,12 @@
           src="./assets/network-frame.svg"
           alt="Network Edge Analyzer Logo"
         />
-        <h1>Robustness Analyzer</h1>
+        <h1>Stability Analyser and Recovery</h1>
       </header>
       <div class="general-container">
         <div class="left-container">
           <div class="panel top-left">
-            <h2>Enter Transition Rate Matrix</h2>
+            <h2>Enter Transition Matrix</h2>
             <textarea
               v-model="matrixInput"
               rows="50"
@@ -87,7 +87,7 @@
                 align-items: center;
               "
             >
-              <h3>Number of Invariant Sets:</h3>
+              <h3>Minimal Recovery Required:</h3>
               <span style="margin-left: 10px; font-size: 18px">
                 <span v-if="invariant !== null">{{ invariant }}</span>
                 <span v-else>Not calculated yet</span>

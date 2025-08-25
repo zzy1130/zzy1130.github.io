@@ -22,6 +22,7 @@ export default {
       // apiBaseUrl: "http://localhost:5000",
       robustness: null,
       invariant: null,
+      pureNetPathRecover: "None",
     };
   },
   methods: {
@@ -38,6 +39,8 @@ export default {
       this.rankEdg = false;
       this.robustness = null;
       this.invariant = null;
+      this.hierNetPathIdentify = "None";
+      this.pureNetPathRecover = "None";
     },
     async visualize() {
       try {
@@ -76,9 +79,70 @@ export default {
         alert("Failed to parse matrix. Please try again.");
       }
     },
+    async recover() {
+      try {
+        const response = await fetch(`${this.apiBaseUrl}/parse-matrix`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            matrix: this.matrixInput,
+            alpha: this.alpha,
+            inx: "recover",
+          }),
+        });
+        const result = await response.json();
+        if (result.error) throw new Error(result.error);
+
+        // Handle the HTML file (if sent as base64/text)
+        if (result.file_data) {
+          const blob = new Blob([result.file_data], { type: "text/html" });
+          const url = URL.createObjectURL(blob);
+          this.pureNetPathRecover = url;
+        }
+
+        // Use it directly in iframe (no need to save to public/)
+      } catch (error) {
+        console.error("Error parsing matrix:", error);
+        alert("Failed to parse matrix. Please try again.");
+      }
+    },
     rankEdges() {
       this.rankEdg = true;
     },
+    async identify() {
+      try {
+        const response = await fetch(`${this.apiBaseUrl}/parse-matrix`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            matrix: this.matrixInput,
+            alpha: this.alpha,
+            inx: "identify",
+          }),
+        });
+        const result = await response.json();
+        if (result.error) throw new Error(result.error);
+
+        // Handle the HTML file (if sent as base64/text)
+        if (result.file_data) {
+          const blob = new Blob([result.file_data], { type: "text/html" });
+          const url = URL.createObjectURL(blob);
+          this.hierNetPathIdentify = url;
+        }
+        // Store edge ranking data
+        this.edgeContributionRank = result.edges || [];
+        this.otherEdges = result.otherEdges || [];
+        this.showHierarchicalNetworkIdentify = true;
+      } catch (error) {
+        console.error("Error parsing matrix:", error);
+        alert(error);
+      }
+    },
+
     async analyze() {
       try {
         const response = await fetch(`${this.apiBaseUrl}/parse-matrix`, {
@@ -92,22 +156,6 @@ export default {
             inx: "analyze",
           }),
         });
-        // const message = await response.json();
-        // console.log("Message: ", message);
-        // if (message.error) {
-        //   alert(message.error);
-        //   return;
-        // }
-        // else {
-        //      // Handle the HTML file (if sent as base64/text)
-        //       if (result.file_data) {
-        //         const blob = new Blob([result.file_data], { type: 'text/html' });
-        //         const url = URL.createObjectURL(blob);
-        //         this.hierNetPath = url;
-        //     }
-        //     this.edgeContributionRank = [...(message.edges || [])];
-        //     this.otherEdges = [...(message.otherEdges || [])];
-        // }
         const result = await response.json();
         if (result.error) throw new Error(result.error);
 

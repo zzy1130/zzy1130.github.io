@@ -30,11 +30,11 @@
             </div>
           </div>
           <div class="panel top-right">
-            <h2>Network Robustness Analyser</h2>
+            <h2>Critical Transition Identification</h2>
             <div id="edge-analysis-graph" class="graph">
               <iframe
-                v-if="hierNetPath !== 'None'"
-                :src="hierNetPath"
+                v-if="hierNetPathIdentify !== 'None'"
+                :src="hierNetPathIdentify"
                 width="90%"
                 height="90%"
                 style="border-radius: 12px; background-color: #e8e8e8"
@@ -143,6 +143,34 @@
                 <li v-if="otherEdges.length === 0">e.g. (2, 3)<(2, 1)</li>
               </ul>
             </div>
+          </div>
+        </div>
+        <div class="right-container">
+          <div class="panel top-right">
+            <h2>Network Robustness Analyser</h2>
+            <div id="edge-analysis-graph" class="graph">
+              <iframe
+                v-if="hierNetPath !== 'None'"
+                :src="hierNetPath"
+                width="90%"
+                height="90%"
+                style="border-radius: 12px; background-color: #e8e8e8"
+              ></iframe>
+            </div>
+            <button class="action-button" @click="identify">Identify</button>
+          </div>
+          <div class="panel top-right">
+            <h2>Minimal Recovery Strategy</h2>
+            <div id="edge-analysis-graph" class="graph">
+              <iframe
+                v-if="pureNetPathRecover !== 'None'"
+                :src="pureNetPathRecover"
+                width="90%"
+                height="90%"
+                style="border-radius: 12px; background-color: #e8e8e8"
+              ></iframe>
+            </div>
+            <button class="action-button" @click="recover">Recover</button>
           </div>
         </div>
       </div>

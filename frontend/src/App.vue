@@ -74,7 +74,7 @@
               <h3>System Stability:</h3>
               <span style="margin-left: 10px; font-size: 18px">
                 <span v-if="robustness !== null">{{ robustness }}</span>
-                <span v-else>Not calculated yet</span>
+                <span v-else>N/A</span>
               </span>
             </div>
             <div
@@ -90,7 +90,7 @@
               <h3>Minimal Recovery Required:</h3>
               <span style="margin-left: 10px; font-size: 18px">
                 <span v-if="invariant !== null">{{ invariant }}</span>
-                <span v-else>Not calculated yet</span>
+                <span v-else>N/A</span>
               </span>
             </div>
             <button

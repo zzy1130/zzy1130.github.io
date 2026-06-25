@@ -9,8 +9,6 @@ redirect_from:
 
 {% include base_path %}
 
-[下载中文简历 (PDF)](/files/resume_zh.pdf)
-
 教育背景
 ======
 * **香港大学** (计算机科学，本科) — 2021年9月 -- 2025年6月

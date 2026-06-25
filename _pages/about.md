@@ -12,10 +12,6 @@ redirect_from:
     <p style="margin: 0; font-size: 1.05rem; line-height: 1.6; color: #334155;">
       I am Zhiyi Zhong (钟之羿), an M.Phil. student in Control Engineering at The University of Hong Kong (HKU), advised by Prof. James Lam. My research interests cover control engineering, deep reinforcement learning, and network science.
     </p>
-    <div style="display: flex; gap: 12px; margin-top: 16px;">
-      <a href="https://scholar.google.com/citations?user=hyx7zZYAAAAJ&hl=en" target="_blank" style="padding: 8px 16px; border-radius: 8px; background-color: #f1f5f9; color: #334155; font-size: 0.9rem; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; border: 1px solid #e2e8f0; transition: all 0.2s;"><i class="fa fa-graduation-cap"></i> Google Scholar</a>
-      <a href="/files/resume_zh.pdf" target="_blank" style="padding: 8px 16px; border-radius: 8px; background-color: #4f46e5; color: #fff; font-size: 0.9rem; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 2px 4px rgba(79, 70, 229, 0.2); transition: all 0.2s;"><i class="fa fa-file-pdf"></i> Download Resume (PDF)</a>
-    </div>
   </div>
 </div>
 

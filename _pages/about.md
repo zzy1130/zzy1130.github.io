@@ -27,6 +27,11 @@ I am Zhiyi Zhong (钟之羿), an M.Phil. student in Control Engineering at The U
 
 ## 精选项目 / Featured Projects
 <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 16px; margin-bottom: 24px;">
+
+  <div style="background: #f8fafc; padding: 16px; border-radius: 8px; border: 1px solid #e2e8f0;">
+    <h4 style="margin: 0; font-size: 1.1rem; color: #1e293b;"><a href="/VFM/">Vision-Foundation-Model (视觉基础模型指南与实现)</a></h4>
+    <p style="margin: 6px 0 0 0; color: #475569; font-size: 0.9rem; line-height: 1.5;">系统整理视觉基础模型技术演进（CLIP与DINO系列），提供经典模型的 PyTorch 纯享版从零代码实现，并支持 DINOv3 空间结构相关可视化交互。</p>
+  </div>
   
   <div style="background: #f8fafc; padding: 16px; border-radius: 8px; border: 1px solid #e2e8f0;">
     <h4 style="margin: 0; font-size: 1.1rem; color: #1e293b;">Aura: 本地优先的 AI 驱动型 LaTeX 智能学术开发软件</h4>

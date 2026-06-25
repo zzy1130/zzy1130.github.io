@@ -11,6 +11,23 @@ Here are some of my featured projects.
 
 <div style="display: flex; flex-direction: column; gap: 24px; margin-top: 24px;">
 
+  <!-- Vision-Foundation-Model Project -->
+  <div style="background: #fff; padding: 24px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); transition: transform 0.2s, box-shadow 0.2s;" class="project-card">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px;">
+      <h3 style="margin: 0; font-size: 1.3rem; font-weight: 700; color: #1e293b;"><a href="/VFM/" style="color: #1e293b; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#4f46e5'" onmouseout="this.style.color='#1e293b'">Vision-Foundation-Model (视觉基础模型指南与实现)</a></h3>
+      <span style="background: #dcfce7; color: #15803d; padding: 4px 8px; border-radius: 6px; font-size: 0.8rem; font-weight: 600;">Available & Ongoing</span>
+    </div>
+    <p style="margin: 12px 0 0 0; color: #475569; font-size: 0.95rem; line-height: 1.6;">
+      针对计算机视觉领域核心的<strong>视觉基础模型 (Vision Foundation Models, VFMs)</strong> 进行了系统的梳理和研究。涵盖了视觉-语言多模态对齐（CLIP 系列，包括基线 CLIP、OpenCLIP、FLIP、CLIPA、EVA-CLIP、SigLIP 等）、自监督表征学习（DINO v1/v2/v3 家族）以及开集目标定位（DINO-DETR, Grounding DINO）等经典与前沿方案。
+    </p>
+    <p style="margin: 8px 0 0 0; color: #475569; font-size: 0.95rem; line-height: 1.6;">
+      本地仓库中包含了上述所有 Available 模型的 PyTorch 纯享版从零代码实现，并配备了 DINOv3 空间结构格拉姆锚定（Gram Anchoring）特征相关的交互式可视化 Demo。其余分割（SAM2/SAM3）、重建、具身智能（RDT-1B）等模型正在火热开发集成中。
+    </p>
+    <div style="margin-top: 16px;">
+      <a href="/VFM/" style="color: #4f46e5; font-weight: 600; text-decoration: none; text-underline-offset: 4px;">访问项目技术指南 &amp; 代码复现 →</a>
+    </div>
+  </div>
+
   <!-- Project 1 -->
   <div style="background: #fff; padding: 24px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); transition: transform 0.2s, box-shadow 0.2s;" class="project-card">
     <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px;">

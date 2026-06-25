@@ -7,15 +7,15 @@
 # server process.
 
 # Basic Site Settings
-locale                   : "en-US"
+locale                   : "zh-CN"
 site_theme               : "default"
-title                    : "Zhong Zhiyi"
+title                    : "钟之羿 (Zhiyi Zhong)"
 title_separator          : "-"
-name                     : &name "Zhong Zhiyi"
-description              : &description "Hello"
-url                      : https://academicpages.github.io # the base hostname & protocol for your site e.g. "https://[your GitHub username].github.io"
+name                     : &name "钟之羿 (Zhiyi Zhong)"
+description              : &description "钟之羿的个人网站 / Personal Website of Zhiyi Zhong"
+url                      : "https://zzy1130.github.io" # the base hostname & protocol for your site e.g. "https://[your GitHub username].github.io"
 baseurl                  : "" # the subpath of your site, e.g. "/blog"
-repository               : "academicpages/academicpages.github.io"
+repository               : "zzy1130/zzy1130.github.io"
 
 # Site Author - The following control what appear as part of the author content on the side bar.
 #               If a field is blank the icon and link will not appear, otherwise it will be shown.
@@ -23,11 +23,11 @@ repository               : "academicpages/academicpages.github.io"
 author:
   # Biographic information
   avatar           : "profile.png"
-  name             : "Zhong Zhiyi"
+  name             : "钟之羿 (Zhiyi Zhong)"
   pronouns         : # example: "she/her"  
-  bio              : "zzy"
-  location         : "Haiyan, Jiaxing"
-  employer         : "HKU"
+  bio              : "香港大学研究型硕士生，研究方向为控制工程与深度强化学习 / MPhil Student at HKU. Research interests: Control Engineering & Deep Reinforcement Learning."
+  location         : "Hong Kong"
+  employer         : "The University of Hong Kong"
   uri              : # URL
   email            : "jeffreyzzy@outlook.com" 
 
@@ -35,9 +35,9 @@ author:
   arxiv            : # URL - Update with the correct link to your profile
   googlescholar    : "https://scholar.google.com/citations?user=PS_CX0AAAAAJ"
   impactstory      : # URL
-  orcid            : "http://orcid.org/yourorcidurl"
+  orcid            : # URL
   semantic         : # URL
-  pubmed           : "https://www.ncbi.nlm.nih.gov/pubmed/?term=john+snow"
+  pubmed           : # URL
   researchgate     : # URL
   scopus           : # URL
 
@@ -45,7 +45,7 @@ author:
   bitbucket        : # Username - Update with your username on the site
   codepen          : # Username
   dribbble         : # Username
-  github           : "academicpages"
+  github           : "zzy1130"
   kaggle           : # Username  
   stackoverflow    : # User number or user number and name (i.e., use "1" or "1/jeff-atwood")    
 

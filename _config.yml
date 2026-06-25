@@ -22,7 +22,7 @@ repository               : "zzy1130/zzy1130.github.io"
 #               Additional customization can be done by editing /_includes/author-profile.html
 author:
   # Biographic information
-  avatar           : "profile.png"
+  avatar           : "profile_photo.jpg"
   name             : "钟之羿 (Zhiyi Zhong)"
   pronouns         : # example: "she/her"  
   bio              : "香港大学研究型硕士生，研究方向为控制工程与深度强化学习 / MPhil Student at HKU. Research interests: Control Engineering & Deep Reinforcement Learning."
@@ -33,7 +33,7 @@ author:
 
   # Academic websites
   arxiv            : # URL - Update with the correct link to your profile
-  googlescholar    : "https://scholar.google.com/citations?user=PS_CX0AAAAAJ"
+  googlescholar    : "https://scholar.google.com/citations?user=hyx7zZYAAAAJ&hl=en"
   impactstory      : # URL
   orcid            : # URL
   semantic         : # URL

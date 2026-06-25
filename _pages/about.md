@@ -6,14 +6,7 @@ redirect_from:
   - /about/
   - /about.html
 ---
-<div style="display: flex; align-items: center; gap: 24px; margin-bottom: 24px; flex-wrap: wrap;">
-  <img src="/images/profile_photo.jpg" alt="Zhiyi Zhong" style="width: 140px; height: 140px; border-radius: 50%; object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.08); border: 3px solid #fff;" />
-  <div style="flex: 1; min-width: 250px;">
-    <p style="margin: 0; font-size: 1.05rem; line-height: 1.6; color: #334155;">
-      I am Zhiyi Zhong (钟之羿), an M.Phil. student in Control Engineering at The University of Hong Kong (HKU), advised by Prof. James Lam. My research interests cover control engineering, deep reinforcement learning, and network science.
-    </p>
-  </div>
-</div>
+I am Zhiyi Zhong (钟之羿), an M.Phil. student in Control Engineering at The University of Hong Kong (HKU), advised by Prof. James Lam. My research interests cover control engineering, deep reinforcement learning, and network science.
 
 ## 研究方向 / Research Interests
 * **布尔控制网络 (Boolean Control Networks, BCNs)** 的全局镇定问题

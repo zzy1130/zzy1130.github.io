@@ -527,6 +527,37 @@ body {
   color: #e2e8f0;
 }
 
+/* GitHub README link in modal */
+.modal-github-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 8px 16px;
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  border-radius: 6px;
+  color: #a5b4fc;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.modal-github-link:hover {
+  background: rgba(99, 102, 241, 0.2);
+  border-color: rgba(99, 102, 241, 0.5);
+  color: #c7d2fe;
+  transform: translateY(-1px);
+}
+
+.modal-github-link svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
 /* Footer */
 .vfm-footer {
   background: rgba(7, 10, 18, 0.6);

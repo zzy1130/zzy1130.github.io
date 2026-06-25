@@ -8,6 +8,7 @@ const modelsData = [
     status: 'Available',
     summary: '图像–文本共享语义空间',
     description: 'OpenAI 提出的双塔对比学习网络，首次确立了以对称 InfoNCE 损失进行大规模图文匹配的范式。',
+    githubReadme: 'https://github.com/zzy1130/Vision-Foundation-Model/blob/main/CLIP/README.md',
     details: {
       introduction: 'OpenAI 于 2021 年提出 CLIP（Learning Transferable Visual Models From Natural Language Supervision），通过大规模互联网图文对（400M 对）进行对比学习，将视觉与文本表征对齐在同一个共享语义空间中，奠定了多模态表征对齐的基石。',
       submodels: [
@@ -51,6 +52,7 @@ const modelsData = [
     status: 'Available',
     summary: '高层视觉特征，对 correspondence 很有帮助',
     description: 'Meta 提出的视觉自监督学习家族，从 v1 的自蒸馏机制发展到 v2 的 iBOT 掩码对齐与 KoLeo 正则，再到 v3 的 Gram 空间锚定约束，全面攻克了自监督表征与密集预测难题。',
+    githubReadme: 'https://github.com/zzy1130/Vision-Foundation-Model/blob/main/DINO/README.md',
     details: {
       introduction: 'DINO（Self-distillation with no labels）是 Meta 提出的革命性自监督学习框架。通过 Teacher-Student 双塔架构和特殊的防崩溃设计，在没有人工标签的情况下，自发学习出高对比度、具备物体边界感以及极强几何对应关系的密集视觉特征。同时，IDEA-Research 团队在 DINO 目标检测器范式上进行了延伸，孵化出 DINO-DETR 与 Grounding DINO 开集文本引导定位器。',
       submodels: [
@@ -258,6 +260,17 @@ export default function App() {
               <span className="modal-category">{activeModel.category}</span>
               <h2>{activeModel.name} 深度指南</h2>
               <p className="modal-intro">{activeModel.details.introduction}</p>
+              {activeModel.githubReadme && (
+                <a
+                  href={activeModel.githubReadme}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="modal-github-link"
+                >
+                  <svg viewBox="0 0 24 24"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/></svg>
+                  在 GitHub 查看该模型的完整研究与原理解析 →
+                </a>
+              )}
             </div>
 
             {/* Sub Tabs */}

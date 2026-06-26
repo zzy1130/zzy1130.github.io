@@ -89,4 +89,97 @@ class GramAnchoringLoss(nn.Module):
 # 核心细节见 dino_detr.py
 # 使用混合查询选择提升 Anchor 质量，Look Forward Twice 增强梯度流回传。`},{name:`Grounding DINO (IDEA, 2023)`,desc:`开集文本引导目标检测。引入双向特征增强器（BiAttention Enhancer），将图像特征与 BERT 提取的文本提示特征进行深度跨模态注意力融合，实现用自然语言 Prompt 零样本定位任意物体。`,code:`# Grounding DINO Cross-Modality Interaction
 # 双向特征对齐计算：
-# img_feats, txt_feats = self.bi_attention(img_feats, txt_feats)`}]}},{id:`sam`,category:`分割`,name:`SAM / SAM2`,status:`Ongoing`,summary:`点 / 框提示分割，SAM2 支持视频`,description:`Meta 提出的通用分割大模型。SAM2 将分割能力拓展到视频领域，实现跨视频帧的时序追踪分割。`},{id:`sam3`,category:`分割追踪`,name:`SAM3`,status:`Ongoing`,summary:`图像与视频级持续分割`,description:`下一代密集像素分割底座，支持在超长视频和极端分布偏移下的持续像素级分割。`},{id:`sam3d`,category:`3D 重建`,name:`SAM3D`,status:`Ongoing`,summary:`资产 / 场景 / 人体重建`,description:`基于分割大模型与 3D 高斯泼溅/NeRF 融合，实现单视角到多视角的高精场景重建。`},{id:`grounded-sam`,category:`检测 + 分割`,name:`Grounded-SAM`,status:`Ongoing`,summary:`检测后分割，工程友好`,description:`融合 Grounding DINO 与 SAM 大模型，实现由文本 Prompt 驱动检测、并最终输出精确分割掩码的工程级流水线。`},{id:`foundationpose`,category:`位姿追踪`,name:`FoundationPose`,status:`Ongoing`,summary:`物体 6D 位姿估计`,description:`通用的物体 6D 位姿估计与追踪，无需针对特定目标进行模型微调，是具身智能抓取的核心底座。`},{id:`depth-anything`,category:`深度估计`,name:`Depth Anything v1/v2`,status:`Ongoing`,summary:`单目深度预测`,description:`通用的单目三维深度预测模型，通过自监督训练和合成数据混训，在未知户外和户内场景中表现出极强的泛化深度预测力。`},{id:`point-transformer`,category:`点云表征`,name:`Point Transformer v3`,status:`Ongoing`,summary:`点云表征`,description:`通用的 3D 点云表征骨干网络，通过大规模稀疏自注意力机制在三维点云分割和分类任务中占据主流。`},{id:`stable-diffusion`,category:`生成`,name:`Stable Diffusion`,status:`Ongoing`,summary:`生成目标图像或中间表征`,description:`潜在扩散模型大成者，除了图像生成之外，常作为强大的密集表征提取骨干用于下游任务。`},{id:`rdt-1b`,category:`机器人 FM`,name:`RDT-1B`,status:`Ongoing`,summary:`双臂操作基础模型`,description:`双臂操作决策 Transformer，是具身智能控制领域十亿参数级的动作预测基础模型。`},{id:`siglip-ongoing`,category:`图文对齐`,name:`SigLIP`,status:`Ongoing`,summary:`图文对齐`,description:`Google 提出的高效多模态对齐骨干，集成 Sigmoid 对比二分类损失，目前标注为 Ongoing 状态。`}],ee=[`All`,`图文对齐`,`表征学习`,`分割`,`分割追踪`,`3D 重建`,`开放词表检测`,`检测 + 分割`,`位姿追踪`,`深度估计`,`点云表征`,`生成`,`机器人 FM`];function S(){let[e,t]=(0,_.useState)(`All`),[n,r]=(0,_.useState)(null),[i,a]=(0,_.useState)(0),o=e===`All`?x:x.filter(t=>t.category===e);return(0,b.jsxs)(`div`,{className:`vfm-app`,children:[(0,b.jsx)(`header`,{className:`vfm-header`,children:(0,b.jsxs)(`div`,{className:`vfm-header-content`,children:[(0,b.jsx)(`div`,{className:`vfm-badge`,children:`Research & Implementations`}),(0,b.jsx)(`h1`,{children:`Vision Foundation Model Guide`}),(0,b.jsx)(`p`,{className:`vfm-subtitle`,children:`聚焦视觉语言对齐、自监督学习、开放域定位等核心计算机视觉基础模型（VFMs）的技术演化脉络。`}),(0,b.jsxs)(`div`,{className:`vfm-links`,children:[(0,b.jsxs)(`a`,{href:`https://github.com/zzy1130/Vision-Foundation-Model`,target:`_blank`,rel:`noreferrer`,className:`vfm-btn vfm-btn-github`,children:[(0,b.jsx)(`svg`,{viewBox:`0 0 24 24`,className:`icon`,children:(0,b.jsx)(`path`,{d:`M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z`})}),`GitHub Repository`]}),(0,b.jsx)(`a`,{href:`/`,className:`vfm-btn vfm-btn-back`,children:`返回个人主页`})]})]})}),(0,b.jsx)(`section`,{className:`vfm-filters-section`,children:(0,b.jsx)(`div`,{className:`vfm-container`,children:(0,b.jsx)(`div`,{className:`vfm-filters`,children:ee.map(n=>(0,b.jsx)(`button`,{className:`filter-tab ${e===n?`active`:``}`,onClick:()=>t(n),children:n},n))})})}),(0,b.jsx)(`main`,{className:`vfm-main`,children:(0,b.jsx)(`div`,{className:`vfm-container`,children:(0,b.jsx)(`div`,{className:`models-grid`,children:o.map(e=>(0,b.jsxs)(`div`,{className:`model-card`,children:[(0,b.jsxs)(`div`,{className:`model-card-header`,children:[(0,b.jsx)(`span`,{className:`card-category`,children:e.category}),(0,b.jsx)(`span`,{className:`status-badge ${e.status.toLowerCase()}`,children:e.status})]}),(0,b.jsx)(`h3`,{className:`model-card-title`,children:e.name}),(0,b.jsx)(`p`,{className:`model-card-summary`,children:e.summary}),(0,b.jsx)(`p`,{className:`model-card-desc`,children:e.description}),(0,b.jsx)(`div`,{className:`model-card-footer`,children:e.status===`Available`?(0,b.jsx)(`button`,{className:`explore-btn`,onClick:()=>{r(e),a(0)},children:`阅读技术指南 →`}):(0,b.jsx)(`span`,{className:`ongoing-tag`,children:`开发进行中 (Ongoing)`})})]},e.id))})})}),n&&(0,b.jsx)(`div`,{className:`vfm-modal-backdrop`,onClick:()=>r(null),children:(0,b.jsxs)(`div`,{className:`vfm-modal`,onClick:e=>e.stopPropagation(),children:[(0,b.jsx)(`button`,{className:`vfm-modal-close`,onClick:()=>r(null),children:`×`}),(0,b.jsxs)(`div`,{className:`modal-header`,children:[(0,b.jsx)(`span`,{className:`modal-category`,children:n.category}),(0,b.jsxs)(`h2`,{children:[n.name,` 深度指南`]}),(0,b.jsx)(`p`,{className:`modal-intro`,children:n.details.introduction}),n.githubReadme&&(0,b.jsxs)(`a`,{href:n.githubReadme,target:`_blank`,rel:`noreferrer`,className:`modal-github-link`,children:[(0,b.jsx)(`svg`,{viewBox:`0 0 24 24`,children:(0,b.jsx)(`path`,{d:`M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z`})}),`在 GitHub 查看该模型的完整研究与原理解析 →`]})]}),(0,b.jsx)(`div`,{className:`modal-tabs`,children:n.details.submodels.map((e,t)=>(0,b.jsx)(`button`,{className:`modal-tab ${i===t?`active`:``}`,onClick:()=>a(t),children:e.name},e.name))}),(0,b.jsxs)(`div`,{className:`modal-tab-content`,children:[(0,b.jsx)(`h3`,{children:n.details.submodels[i].name}),(0,b.jsx)(`p`,{className:`submodel-desc`,children:n.details.submodels[i].desc}),(0,b.jsxs)(`div`,{className:`code-container`,children:[(0,b.jsx)(`div`,{className:`code-header`,children:(0,b.jsx)(`span`,{children:`PyTorch Implementation`})}),(0,b.jsx)(`pre`,{children:(0,b.jsx)(`code`,{children:n.details.submodels[i].code})})]})]})]})}),(0,b.jsx)(`footer`,{className:`vfm-footer`,children:(0,b.jsx)(`div`,{className:`vfm-container`,children:(0,b.jsxs)(`p`,{children:[`© `,new Date().getFullYear(),` Zhiyi Zhong (钟之羿). Built with React & Vite.`]})})})]})}(0,v.createRoot)(document.getElementById(`root`)).render((0,b.jsx)(_.StrictMode,{children:(0,b.jsx)(S,{})}));
+# img_feats, txt_feats = self.bi_attention(img_feats, txt_feats)`}]}},{id:`sam`,category:`分割`,name:`SAM 系列 (v1 / v2 / v3 & 变体)`,status:`Available`,summary:`提示分割、时序跟踪与高精度变体全家桶`,description:`Meta AI 提出的可提示分割大模型家族。从 SAM 1 奠定三塔结构，到 SAM 2 引入 Memory Bank 实现视频时序追踪，再到 SAM 3 的可提示概念分割（PCS），以及 HQ-SAM、MobileSAM 的精度与速度方向变体，生态完整，工程友好。`,githubReadme:`https://github.com/zzy1130/Vision-Foundation-Model/blob/main/SAM/README.md`,details:{introduction:`SAM（Segment Anything Model）是 Meta AI 于 2023 年发布的通用交互式分割基础模型，确立了「图像编码器 + 提示编码器 + 掩码解码器」三塔结构范式，并配合 SA-1B（11 亿掩码）数据集实现零样本泛化。本项目对 SAM 生态中的 7 个核心架构进行了纯 PyTorch 从零实现：SAM 1 基线、SAM 2 时序记忆追踪、SAM 3 可提示概念分割、SAM 3D 三维重建、HQ-SAM 高精度边界修正、MobileSAM 轻量化加速、Grounded-SAM 开集文本分割流水线。`,submodels:[{name:`SAM 1 (Meta, 2023)`,desc:`三塔结构提示分割基线。重型 ViT-H 图像编码器提取特征，轻量提示编码器处理点/框/掩码提示，双向交叉注意力掩码解码器同时预测 3 个粒度的掩码（Whole / Part / Subpart）并评估 IoU 分数，用 Focal Loss + Dice Loss 联合训练。`,code:`# SAM 1 核心前向调用
+from SAM.sam_v1 import SAM1
+import torch
+
+model = SAM1(in_channels=3, embed_dim=256)
+
+images = torch.randn(1, 3, 256, 256)
+points = torch.tensor([[[0.3, 0.4], [0.7, 0.8]]])  # [B, N_pts, 2]
+labels = torch.tensor([[1, 0]])                     # 1=前景, 0=背景
+boxes  = torch.tensor([[0.2, 0.2, 0.8, 0.8]])       # [B, 4] xyxy
+
+masks, iou_scores = model(images, points=points, labels=labels, boxes=boxes)
+# masks: [1, 3, 64, 64]  三个粒度掩码
+# iou_scores: [1, 3]     对应 IoU 置信分数`},{name:`SAM 2 (Meta, 2024)`,desc:`视频流式记忆追踪。引入 Memory Bank（FIFO 队列）存储历史帧特征与掩码，Memory Attention Block 让当前帧以 Cross-Attention 检索历史信息实现跨帧传播。用户可在任意帧添加 Prompt 作为新记忆节点，向前后扩散修正。`,code:`# SAM 2 视频流式追踪调用
+from SAM.sam_v2 import SAM2
+import torch
+
+model = SAM2(in_channels=3, embed_dim=256)
+model.reset_video_memory()   # 清空记忆库
+
+# 第 0 帧：用户交互
+img0 = torch.randn(1, 3, 256, 256)
+pts0 = torch.tensor([[[0.5, 0.5]]])
+lbls0 = torch.tensor([[1]])
+masks0, iou0 = model(img0, points=pts0, labels=lbls0, is_video_frame=True)
+
+# 第 1 帧：自动时序追踪（无 Prompt）
+img1 = torch.randn(1, 3, 256, 256)
+masks1, iou1 = model(img1, is_video_frame=True)
+print("Tracked:", masks1.shape)  # [1, 3, 64, 64]`},{name:`SAM 3 (2025)`,desc:`可提示概念分割（PCS）与存在性检测。引入多模态 Concept Encoder 将文本名词或视觉示例 Crop 编码为统一 prompt token，并新增独立 Presence Head 输出目标存在概率，防止遮挡/出界时的追踪漂移。`,code:`# SAM 3 概念提示分割调用
+from SAM.sam_v3 import SAM3
+import torch
+
+model = SAM3(in_channels=3, embed_dim=256)
+
+images = torch.randn(1, 3, 256, 256)
+text_ids = torch.randint(0, 30522, (1, 5))    # 文本提示 token
+exemplars = torch.randn(1, 3, 64, 64)         # 视觉示例 Crop
+
+masks, scores, presence_logits = model(
+    images, text_input_ids=text_ids, exemplar_crops=exemplars
+)
+print("PCS masks:", masks.shape)              # [1, 3, 64, 64]
+print("Presence logit:", presence_logits)     # [1, 1]`},{name:`SAM 3D (2023–2025)`,desc:`2D 掩码三维反投影与生成式网格重建。Camera Lifting Module 利用相机内参 K 与外参 [R|T]，将 2D 分割掩码与深度图反投影到三维点云。生成式网格头基于全局图像特征解码出三维边界框布局与网格顶点偏移量，实现单视角零样本三维重建。`,code:`# SAM 3D 反投影与三维网格重建
+from SAM.sam_3d import SAM3D
+import torch
+
+model = SAM3D(embed_dim=256, num_vertices=100, num_faces=200)
+
+img_feats   = torch.randn(1, 256, 16, 16)
+mask_logits = torch.randn(1, 1, 32, 32)
+depth_map   = torch.randn(1, 1, 32, 32).abs() + 0.1
+intrinsics  = torch.eye(3).unsqueeze(0)                               # K [1,3,3]
+extrinsics  = torch.cat([torch.eye(3), torch.zeros(3,1)], dim=1).unsqueeze(0)  # [R|T] [1,3,4]
+
+outputs = model(img_feats, mask_logits=mask_logits,
+                depth_map=depth_map, intrinsics=intrinsics, extrinsics=extrinsics)
+print("Mesh vertices:", outputs["vertices"].shape)     # [1, 100, 3]
+print("3D Point Cloud:", outputs["point_cloud"].shape) # [1, 1024, 3]`},{name:`HQ-SAM (ICCV 2023)`,desc:`高精度边界修正。完全冻结 SAM 1 预训练权重，仅加入可学习 HQ-Token。该 Token 融合 ViT 浅层的高清几何边界特征（Low-level early features）与深层语义特征，专门修复发丝、网格等极细微物体的分割质量。`,code:`# HQ-SAM 高精度掩码生成
+from SAM.hq_sam import HQSAM
+import torch
+
+model = HQSAM(in_channels=3, embed_dim=256)
+
+images = torch.randn(1, 3, 256, 256)
+points = torch.tensor([[[0.5, 0.5]]])
+labels = torch.tensor([[1]])
+
+masks, iou_scores = model(images, points=points, labels=labels)
+# masks: [1, 4, 64, 64]  — 前 3 个同 SAM 1, 第 4 个是 HQ 高精掩码
+print("HQ mask:", masks[:, 3, :, :].shape)  # [1, 64, 64]`},{name:`MobileSAM (2023)`,desc:`解耦知识蒸馏轻量化。保持提示编码器和掩码解码器完全冻结，仅用 5M 参数的 TinyViT 替换原 ViT-H 图像编码器，蒸馏对齐其特征空间，在移动端实现毫秒级实时分割。`,code:`# MobileSAM 边缘端快速分割
+from SAM.mobile_sam import MobileSAM
+import torch
+
+model = MobileSAM(in_channels=3, embed_dim=256)
+
+images = torch.randn(1, 3, 256, 256)
+boxes  = torch.tensor([[0.1, 0.1, 0.9, 0.9]])
+
+masks, iou_scores = model(images, boxes=boxes)
+print("MobileSAM masks:", masks.shape)  # [1, 3, 64, 64]`},{name:`Grounded-SAM`,desc:`开集文本引导分割流水线。Grounding DINO 接收自然语言 Prompt 检测目标并输出边界框；框坐标自动从 [cx,cy,w,h] 转换为 [x1,y1,x2,y2] 作为 SAM 的 Box Prompt，生成高精度开集语义分割掩码，全流程无需任何类别预定义。`,code:`# Grounded-SAM 文本驱动开集分割
+from SAM.grounded_sam import GroundedSAM
+import torch
+
+model = GroundedSAM(vocab_size=30522, num_queries=15, embed_dim=256)
+
+images    = torch.randn(1, 3, 256, 256)
+input_ids = torch.randint(0, 30522, (1, 10))  # 文本 prompt tokenized
+
+masks_batch, boxes_batch = model(images, input_ids, confidence_threshold=0.1)
+masks = masks_batch[0]  # 首张图检测分割结果
+if masks is not None:
+    print(f"Detected {boxes_batch[0].shape[0]} targets")
+    print("Seg masks shape:", masks.shape)  # [N, 1, 64, 64]`}]}},{id:`foundationpose`,category:`位姿追踪`,name:`FoundationPose`,status:`Ongoing`,summary:`物体 6D 位姿估计`,description:`通用的物体 6D 位姿估计与追踪，无需针对特定目标进行模型微调，是具身智能抓取的核心底座。`},{id:`depth-anything`,category:`深度估计`,name:`Depth Anything v1/v2`,status:`Ongoing`,summary:`单目深度预测`,description:`通用的单目三维深度预测模型，通过自监督训练和合成数据混训，在未知户外和户内场景中表现出极强的泛化深度预测力。`},{id:`point-transformer`,category:`点云表征`,name:`Point Transformer v3`,status:`Ongoing`,summary:`点云表征`,description:`通用的 3D 点云表征骨干网络，通过大规模稀疏自注意力机制在三维点云分割和分类任务中占据主流。`},{id:`stable-diffusion`,category:`生成`,name:`Stable Diffusion`,status:`Ongoing`,summary:`生成目标图像或中间表征`,description:`潜在扩散模型大成者，除了图像生成之外，常作为强大的密集表征提取骨干用于下游任务。`},{id:`rdt-1b`,category:`机器人 FM`,name:`RDT-1B`,status:`Ongoing`,summary:`双臂操作基础模型`,description:`双臂操作决策 Transformer，是具身智能控制领域十亿参数级的动作预测基础模型。`},{id:`siglip-ongoing`,category:`图文对齐`,name:`SigLIP`,status:`Ongoing`,summary:`图文对齐`,description:`Google 提出的高效多模态对齐骨干，集成 Sigmoid 对比二分类损失，目前标注为 Ongoing 状态。`}],ee=[`All`,`图文对齐`,`表征学习`,`分割`,`分割追踪`,`3D 重建`,`开放词表检测`,`检测 + 分割`,`位姿追踪`,`深度估计`,`点云表征`,`生成`,`机器人 FM`];function S(){let[e,t]=(0,_.useState)(`All`),[n,r]=(0,_.useState)(null),[i,a]=(0,_.useState)(0),o=e===`All`?x:x.filter(t=>t.category===e);return(0,b.jsxs)(`div`,{className:`vfm-app`,children:[(0,b.jsx)(`header`,{className:`vfm-header`,children:(0,b.jsxs)(`div`,{className:`vfm-header-content`,children:[(0,b.jsx)(`div`,{className:`vfm-badge`,children:`Research & Implementations`}),(0,b.jsx)(`h1`,{children:`Vision Foundation Model Guide`}),(0,b.jsx)(`p`,{className:`vfm-subtitle`,children:`聚焦视觉语言对齐、自监督学习、开放域定位等核心计算机视觉基础模型（VFMs）的技术演化脉络。`}),(0,b.jsxs)(`div`,{className:`vfm-links`,children:[(0,b.jsxs)(`a`,{href:`https://github.com/zzy1130/Vision-Foundation-Model`,target:`_blank`,rel:`noreferrer`,className:`vfm-btn vfm-btn-github`,children:[(0,b.jsx)(`svg`,{viewBox:`0 0 24 24`,className:`icon`,children:(0,b.jsx)(`path`,{d:`M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z`})}),`GitHub Repository`]}),(0,b.jsx)(`a`,{href:`/`,className:`vfm-btn vfm-btn-back`,children:`返回个人主页`})]})]})}),(0,b.jsx)(`section`,{className:`vfm-filters-section`,children:(0,b.jsx)(`div`,{className:`vfm-container`,children:(0,b.jsx)(`div`,{className:`vfm-filters`,children:ee.map(n=>(0,b.jsx)(`button`,{className:`filter-tab ${e===n?`active`:``}`,onClick:()=>t(n),children:n},n))})})}),(0,b.jsx)(`main`,{className:`vfm-main`,children:(0,b.jsx)(`div`,{className:`vfm-container`,children:(0,b.jsx)(`div`,{className:`models-grid`,children:o.map(e=>(0,b.jsxs)(`div`,{className:`model-card`,children:[(0,b.jsxs)(`div`,{className:`model-card-header`,children:[(0,b.jsx)(`span`,{className:`card-category`,children:e.category}),(0,b.jsx)(`span`,{className:`status-badge ${e.status.toLowerCase()}`,children:e.status})]}),(0,b.jsx)(`h3`,{className:`model-card-title`,children:e.name}),(0,b.jsx)(`p`,{className:`model-card-summary`,children:e.summary}),(0,b.jsx)(`p`,{className:`model-card-desc`,children:e.description}),(0,b.jsx)(`div`,{className:`model-card-footer`,children:e.status===`Available`?(0,b.jsx)(`button`,{className:`explore-btn`,onClick:()=>{r(e),a(0)},children:`阅读技术指南 →`}):(0,b.jsx)(`span`,{className:`ongoing-tag`,children:`开发进行中 (Ongoing)`})})]},e.id))})})}),n&&(0,b.jsx)(`div`,{className:`vfm-modal-backdrop`,onClick:()=>r(null),children:(0,b.jsxs)(`div`,{className:`vfm-modal`,onClick:e=>e.stopPropagation(),children:[(0,b.jsx)(`button`,{className:`vfm-modal-close`,onClick:()=>r(null),children:`×`}),(0,b.jsxs)(`div`,{className:`modal-header`,children:[(0,b.jsx)(`span`,{className:`modal-category`,children:n.category}),(0,b.jsxs)(`h2`,{children:[n.name,` 深度指南`]}),(0,b.jsx)(`p`,{className:`modal-intro`,children:n.details.introduction}),n.githubReadme&&(0,b.jsxs)(`a`,{href:n.githubReadme,target:`_blank`,rel:`noreferrer`,className:`modal-github-link`,children:[(0,b.jsx)(`svg`,{viewBox:`0 0 24 24`,children:(0,b.jsx)(`path`,{d:`M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z`})}),`在 GitHub 查看该模型的完整研究与原理解析 →`]})]}),(0,b.jsx)(`div`,{className:`modal-tabs`,children:n.details.submodels.map((e,t)=>(0,b.jsx)(`button`,{className:`modal-tab ${i===t?`active`:``}`,onClick:()=>a(t),children:e.name},e.name))}),(0,b.jsxs)(`div`,{className:`modal-tab-content`,children:[(0,b.jsx)(`h3`,{children:n.details.submodels[i].name}),(0,b.jsx)(`p`,{className:`submodel-desc`,children:n.details.submodels[i].desc}),(0,b.jsxs)(`div`,{className:`code-container`,children:[(0,b.jsx)(`div`,{className:`code-header`,children:(0,b.jsx)(`span`,{children:`PyTorch Implementation`})}),(0,b.jsx)(`pre`,{children:(0,b.jsx)(`code`,{children:n.details.submodels[i].code})})]})]})]})}),(0,b.jsx)(`footer`,{className:`vfm-footer`,children:(0,b.jsx)(`div`,{className:`vfm-container`,children:(0,b.jsxs)(`p`,{children:[`© `,new Date().getFullYear(),` Zhiyi Zhong (钟之羿). Built with React & Vite.`]})})})]})}(0,v.createRoot)(document.getElementById(`root`)).render((0,b.jsx)(_.StrictMode,{children:(0,b.jsx)(S,{})}));

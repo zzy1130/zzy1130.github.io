@@ -617,14 +617,6 @@ print("Predicted actions traj:", pred_actions.shape)  # [1, 64, 128]`
         }
       ]
     }
-  },
-  {
-    id: 'siglip-ongoing',
-    category: '图文对齐',
-    name: 'SigLIP',
-    status: 'Ongoing',
-    summary: '图文对齐',
-    description: 'Google 提出的高效多模态对齐骨干，集成 Sigmoid 对比二分类损失，目前标注为 Ongoing 状态。'
   }
 ];
 
@@ -649,7 +641,7 @@ const ModelCard = React.memo(function ModelCard({ model, onOpen }) {
   }, [model, onOpen]);
 
   return (
-    <article className="model-card" aria-label={`${model.name} — ${model.category}`}>
+    <article className="model-card" role="listitem" aria-label={`${model.name} — ${model.category}`}>
       <div className="model-card-header">
         <span className="card-category">{model.category}</span>
         <span className={`status-badge ${model.status.toLowerCase()}`} aria-label={`Status: ${model.status}`}>
@@ -895,9 +887,7 @@ export default function App() {
           ) : (
             <div className="models-grid" role="list" aria-label="模型列表">
               {filteredModels.map(model => (
-                <div key={model.id} role="listitem">
-                  <ModelCard model={model} onOpen={handleOpenModel} />
-                </div>
+                <ModelCard key={model.id} model={model} onOpen={handleOpenModel} />
               ))}
             </div>
           )}

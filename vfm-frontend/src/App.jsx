@@ -278,148 +278,292 @@ if masks is not None:
 
 const categories = ['All', '图文对齐', '表征学习', '分割', '分割追踪', '3D 重建', '开放词表检测', '检测 + 分割', '位姿追踪', '深度估计', '点云表征', '生成', '机器人 FM'];
 
+
+const GITHUB_SVG = <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/></svg>;
+
+// ──────────────────────────────────────────────
+// Extracted: ModelCard component (React.memo for perf)
+// ──────────────────────────────────────────────
+const ModelCard = React.memo(function ModelCard({ model, onOpen }) {
+  const handleClick = useCallback(() => {
+    onOpen(model);
+  }, [model, onOpen]);
+
+  const handleKeyDown = useCallback((e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onOpen(model);
+    }
+  }, [model, onOpen]);
+
+  return (
+    <article className="model-card" aria-label={`${model.name} — ${model.category}`}>
+      <div className="model-card-header">
+        <span className="card-category">{model.category}</span>
+        <span className={`status-badge ${model.status.toLowerCase()}`} aria-label={`Status: ${model.status}`}>
+          {model.status}
+        </span>
+      </div>
+      <h3 className="model-card-title">{model.name}</h3>
+      <p className="model-card-summary">{model.summary}</p>
+      <p className="model-card-desc">{model.description}</p>
+      <div className="model-card-footer">
+        {model.status === 'Available' ? (
+          <button
+            className="explore-btn"
+            onClick={handleClick}
+            onKeyDown={handleKeyDown}
+            aria-haspopup="dialog"
+          >
+            阅读技术指南 →
+          </button>
+        ) : (
+          <span className="ongoing-tag" aria-label="Coming soon">开发进行中 (Ongoing)</span>
+        )}
+      </div>
+    </article>
+  );
+});
+
+// ──────────────────────────────────────────────
+// Extracted: ModalDetail component with focus management
+// ──────────────────────────────────────────────
+const ModalDetail = React.memo(function ModalDetail({ model, onClose }) {
+  const [activeSubTab, setActiveSubTab] = useState(0);
+  const closeRef = useRef(null);
+  const modalRef = useRef(null);
+
+  // Focus the close button when modal opens (focus management from skill)
+  useEffect(() => {
+    closeRef.current?.focus();
+    // Re-set sub tab when model changes
+    setActiveSubTab(0);
+  }, [model]);
+
+  // Escape key to close (accessibility pattern from skill)
+  useEffect(() => {
+    const handleEsc = (e) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', handleEsc);
+    return () => document.removeEventListener('keydown', handleEsc);
+  }, [onClose]);
+
+  const handleTabKeyDown = useCallback((e, idx) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      setActiveSubTab(idx);
+    }
+    if (e.key === 'ArrowRight') {
+      setActiveSubTab(i => Math.min(i + 1, model.details.submodels.length - 1));
+    }
+    if (e.key === 'ArrowLeft') {
+      setActiveSubTab(i => Math.max(i - 1, 0));
+    }
+  }, [model.details.submodels.length]);
+
+  const currentSub = model.details.submodels[activeSubTab];
+
+  return (
+    <div
+      className="vfm-modal-backdrop"
+      onClick={onClose}
+      role="presentation"
+    >
+      <div
+        className="vfm-modal"
+        ref={modalRef}
+        onClick={e => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
+      >
+        <button
+          ref={closeRef}
+          className="vfm-modal-close"
+          onClick={onClose}
+          aria-label="关闭详情面板"
+        >×</button>
+
+        <div className="modal-header">
+          <span className="modal-category">{model.category}</span>
+          <h2 id="modal-title">{model.name} 深度指南</h2>
+          <p className="modal-intro">{model.details.introduction}</p>
+          {model.githubReadme && (
+            <a
+              href={model.githubReadme}
+              target="_blank"
+              rel="noreferrer"
+              className="modal-github-link"
+              aria-label={`在 GitHub 查看 ${model.name} 的完整研究文档（新标签页打开）`}
+            >
+              {GITHUB_SVG}
+              在 GitHub 查看该模型的完整研究与原理解析 →
+            </a>
+          )}
+        </div>
+
+        {/* Sub Tabs — keyboard navigable (ArrowLeft/ArrowRight) */}
+        <div className="modal-tabs" role="tablist" aria-label="子模型选择">
+          {model.details.submodels.map((sub, idx) => (
+            <button
+              key={sub.name}
+              role="tab"
+              id={`tab-${idx}`}
+              aria-selected={activeSubTab === idx}
+              aria-controls={`tabpanel-${idx}`}
+              className={`modal-tab ${activeSubTab === idx ? 'active' : ''}`}
+              onClick={() => setActiveSubTab(idx)}
+              onKeyDown={(e) => handleTabKeyDown(e, idx)}
+              tabIndex={activeSubTab === idx ? 0 : -1}
+            >
+              {sub.name}
+            </button>
+          ))}
+        </div>
+
+        {/* Tab Content */}
+        <div
+          className="modal-tab-content"
+          role="tabpanel"
+          id={`tabpanel-${activeSubTab}`}
+          aria-labelledby={`tab-${activeSubTab}`}
+        >
+          <h3>{currentSub.name}</h3>
+          <p className="submodel-desc">{currentSub.desc}</p>
+
+          <div className="code-container">
+            <div className="code-header">
+              <span>PyTorch Implementation</span>
+              <span className="code-lang-badge">Python</span>
+            </div>
+            <pre>
+              <code>{currentSub.code}</code>
+            </pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+});
+
+// ──────────────────────────────────────────────
+// Main App
+// ──────────────────────────────────────────────
 export default function App() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [activeModel, setActiveModel] = useState(null);
-  const [activeSubTab, setActiveSubTab] = useState(0);
 
-  const filteredModels = selectedCategory === 'All'
-    ? modelsData
-    : modelsData.filter(m => m.category === selectedCategory);
+  // useMemo: avoid recomputing filtered list on every render (perf optimization)
+  const filteredModels = useMemo(() =>
+    selectedCategory === 'All'
+      ? modelsData
+      : modelsData.filter(m => m.category === selectedCategory),
+    [selectedCategory]
+  );
+
+  // useCallback: stable references for handlers passed to children (perf optimization)
+  const handleOpenModel = useCallback((model) => {
+    setActiveModel(model);
+  }, []);
+
+  const handleCloseModel = useCallback(() => {
+    setActiveModel(null);
+  }, []);
+
+  const handleCategoryChange = useCallback((cat) => {
+    setSelectedCategory(cat);
+  }, []);
+
+  const availableCount = useMemo(() => modelsData.filter(m => m.status === 'Available').length, []);
+  const ongoingCount = useMemo(() => modelsData.filter(m => m.status === 'Ongoing').length, []);
 
   return (
     <div className="vfm-app">
       {/* Hero Header */}
-      <header className="vfm-header">
+      <header className="vfm-header" role="banner">
         <div className="vfm-header-content">
           <div className="vfm-badge">Research &amp; Implementations</div>
           <h1>Vision Foundation Model Guide</h1>
           <p className="vfm-subtitle">
             聚焦视觉语言对齐、自监督学习、开放域定位等核心计算机视觉基础模型（VFMs）的技术演化脉络。
           </p>
+
+          {/* Stats bar */}
+          <div className="vfm-stats" role="region" aria-label="数据概览">
+            <div className="stat-item">
+              <span className="stat-num">{modelsData.length}</span>
+              <span className="stat-label">Models</span>
+            </div>
+            <div className="stat-divider" aria-hidden="true" />
+            <div className="stat-item">
+              <span className="stat-num available">{availableCount}</span>
+              <span className="stat-label">Available</span>
+            </div>
+            <div className="stat-divider" aria-hidden="true" />
+            <div className="stat-item">
+              <span className="stat-num ongoing">{ongoingCount}</span>
+              <span className="stat-label">Ongoing</span>
+            </div>
+          </div>
+
           <div className="vfm-links">
             <a href="https://github.com/zzy1130/Vision-Foundation-Model" target="_blank" rel="noreferrer" className="vfm-btn vfm-btn-github">
-              <svg viewBox="0 0 24 24" className="icon"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/></svg>
+              <svg viewBox="0 0 24 24" className="icon" aria-hidden="true"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/></svg>
               GitHub Repository
             </a>
-            <a href="/" className="vfm-btn vfm-btn-back">
+            <a href="/" className="vfm-btn vfm-btn-back" aria-label="返回钟之羿个人主页">
               返回个人主页
             </a>
           </div>
         </div>
       </header>
 
-      {/* Category Tabs */}
-      <section className="vfm-filters-section">
+      {/* Category Filters */}
+      <nav className="vfm-filters-section" aria-label="模型分类筛选">
         <div className="vfm-container">
-          <div className="vfm-filters">
+          <div className="vfm-filters" role="group" aria-label="Category filters">
             {categories.map(cat => (
               <button
                 key={cat}
                 className={`filter-tab ${selectedCategory === cat ? 'active' : ''}`}
-                onClick={() => setSelectedCategory(cat)}
+                onClick={() => handleCategoryChange(cat)}
+                aria-pressed={selectedCategory === cat}
               >
                 {cat}
               </button>
             ))}
           </div>
         </div>
-      </section>
+      </nav>
 
       {/* Models Grid */}
-      <main className="vfm-main">
+      <main className="vfm-main" id="main-content">
         <div className="vfm-container">
-          <div className="models-grid">
-            {filteredModels.map(model => (
-              <div key={model.id} className="model-card">
-                <div className="model-card-header">
-                  <span className="card-category">{model.category}</span>
-                  <span className={`status-badge ${model.status.toLowerCase()}`}>{model.status}</span>
+          {filteredModels.length === 0 ? (
+            <p className="empty-state">No models found in this category.</p>
+          ) : (
+            <div className="models-grid" role="list" aria-label="模型列表">
+              {filteredModels.map(model => (
+                <div key={model.id} role="listitem">
+                  <ModelCard model={model} onOpen={handleOpenModel} />
                 </div>
-                <h3 className="model-card-title">{model.name}</h3>
-                <p className="model-card-summary">{model.summary}</p>
-                <p className="model-card-desc">{model.description}</p>
-                <div className="model-card-footer">
-                  {model.status === 'Available' ? (
-                    <button
-                      className="explore-btn"
-                      onClick={() => {
-                        setActiveModel(model);
-                        setActiveSubTab(0);
-                      }}
-                    >
-                      阅读技术指南 →
-                    </button>
-                  ) : (
-                    <span className="ongoing-tag">开发进行中 (Ongoing)</span>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </main>
 
       {/* Detailed Overlay Modal */}
       {activeModel && (
-        <div className="vfm-modal-backdrop" onClick={() => setActiveModel(null)}>
-          <div className="vfm-modal" onClick={e => e.stopPropagation()}>
-            <button className="vfm-modal-close" onClick={() => setActiveModel(null)}>×</button>
-            
-            <div className="modal-header">
-              <span className="modal-category">{activeModel.category}</span>
-              <h2>{activeModel.name} 深度指南</h2>
-              <p className="modal-intro">{activeModel.details.introduction}</p>
-              {activeModel.githubReadme && (
-                <a
-                  href={activeModel.githubReadme}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="modal-github-link"
-                >
-                  <svg viewBox="0 0 24 24"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/></svg>
-                  在 GitHub 查看该模型的完整研究与原理解析 →
-                </a>
-              )}
-            </div>
-
-            {/* Sub Tabs */}
-            <div className="modal-tabs">
-              {activeModel.details.submodels.map((sub, idx) => (
-                <button
-                  key={sub.name}
-                  className={`modal-tab ${activeSubTab === idx ? 'active' : ''}`}
-                  onClick={() => setActiveSubTab(idx)}
-                >
-                  {sub.name}
-                </button>
-              ))}
-            </div>
-
-            {/* Tab Content */}
-            <div className="modal-tab-content">
-              <h3>{activeModel.details.submodels[activeSubTab].name}</h3>
-              <p className="submodel-desc">{activeModel.details.submodels[activeSubTab].desc}</p>
-              
-              <div className="code-container">
-                <div className="code-header">
-                  <span>PyTorch Implementation</span>
-                </div>
-                <pre>
-                  <code>{activeModel.details.submodels[activeSubTab].code}</code>
-                </pre>
-              </div>
-            </div>
-          </div>
-        </div>
+        <ModalDetail model={activeModel} onClose={handleCloseModel} />
       )}
 
       {/* Footer */}
       <footer className="vfm-footer">
         <div className="vfm-container">
-          <p>© {new Date().getFullYear()} Zhiyi Zhong (钟之羿). Built with React &amp; Vite.</p>
+          <p>© {new Date().getFullYear()} Zhiyi Zhong (钟之羿). Built with React &amp; Vite · frontend-patterns skill applied.</p>
         </div>
       </footer>
     </div>
   );
 }
+

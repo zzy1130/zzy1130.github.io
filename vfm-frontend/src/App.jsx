@@ -230,41 +230,393 @@ if masks is not None:
     id: 'foundationpose',
     category: '位姿追踪',
     name: 'FoundationPose',
-    status: 'Ongoing',
-    summary: '物体 6D 位姿估计',
-    description: '通用的物体 6D 位姿估计与追踪，无需针对特定目标进行模型微调，是具身智能抓取的核心底座。'
+    status: 'Available',
+    summary: '零样本未知物体 6D 位姿估计与追踪',
+    description: '零样本泛化的 6D 物体姿态估计与跟踪基础模型。从传统的特征渲染对比，到 Any6D 的单视角无 CAD 尺度估计，再到 FreeZeV2 免训练点云匹配与 OPFormer 的端到端 Transformer 几何重构。',
+    githubReadme: 'https://github.com/zzy1130/Vision-Foundation-Model/blob/main/FoundationPose/README.md',
+    details: {
+      introduction: 'FoundationPose（CVPR 2024 Highlight）奠定了统一的未知物体姿态估计与跟踪框架。本项目对其及后续 Any6D、FreeZeV2 和 OPFormer 进行了纯 PyTorch 复现，实现了无需微调即可泛化到未知物体的三维位姿估计。',
+      submodels: [
+        {
+          name: 'FoundationPose (CVPR 2024)',
+          desc: '姿态估计与追踪基准。采用共享特征提取器融合 RGB-D 裁剪图与渲染姿态模板，使用 Pose RefineNet 连续回归 6D 相对更新量 (ΔR, Δt)，最后通过 Pose Selection Transformer 利用自注意力打分机制筛选最优假设。',
+          code: `# FoundationPose 姿态细化与选择
+import torch
+from FoundationPose.foundation_pose import FoundationPose
+
+model = FoundationPose(feature_dim=128)
+
+# 1个 Batch, 5个候选姿态渲染图, 4通道(RGB-D)
+query_img = torch.randn(1, 4, 112, 112)
+candidate_renders = torch.randn(1, 5, 4, 112, 112)
+
+best_idx, (refined_rot, refined_trans), scores = model(query_img, candidate_renders, refine_iters=3)
+print("Best candidate index:", best_idx.item())
+print("Refined Rotations:", refined_rot.shape)  # [1, 5, 3, 3]`
+        },
+        {
+          name: 'Any6D (CVPR 2025)',
+          desc: '无 CAD 模型的 6D 姿态与绝对尺度估计。利用 InstantMesh 单视角三维重建恢复 normalized 网格，通过 Coarse Scale Aligner 计算绝对尺度因子 s 以及初始平移，最终级联精细化头估计物理世界的绝对尺寸姿态。',
+          code: `# Any6D 6D位姿与绝对尺度预测
+from FoundationPose.any6d import Any6D
+import torch
+
+model = Any6D(feature_dim=128)
+
+anchor_rgb = torch.randn(1, 3, 112, 112)
+anchor_depth = torch.randn(1, 1, 112, 112)
+anchor_mask = (torch.randn(1, 1, 112, 112) > 0).float()
+
+query_img = torch.randn(1, 4, 112, 112)
+candidate_renders = torch.randn(1, 5, 4, 112, 112)
+
+best_idx, (rot, trans), scores, scale = model(
+    anchor_rgb, anchor_depth, anchor_mask,
+    query_img, candidate_renders, refine_iters=2
+)
+print("Metric scale s:", scale.item())`
+        },
+        {
+          name: 'FreeZeV2 (BOP 2024 Winner)',
+          desc: '免训练点云匹配位姿估计器。彻底冻结 DINOv2 作为视觉编码器提取超强局部特征，将像素根据深度反投影到 3D 空间，双向特征检索后利用 RANSAC 鲁棒采样和 Kabsch SVD 算法闭式解出最优位姿。',
+          code: `# FreeZeV2 免训练位姿估计
+from FoundationPose.freeze_v2 import FreeZeV2
+import torch
+
+model = FreeZeV2(feature_dim=384, ransac_iters=30)
+
+query_rgb = torch.randn(1, 3, 112, 112)
+query_depth = torch.randn(1, 1, 112, 112)
+query_intrinsics = torch.tensor([[[100.0, 0.0, 56.0], [0.0, 100.0, 56.0], [0.0, 0.0, 1.0]]])
+
+# 20个 3D 模板点及其 DINOv2 描述子
+template_descriptors = torch.randn(1, 20, 384)
+template_pts_3d = torch.randn(1, 20, 3)
+
+R, t, conf = model(query_rgb, query_depth, query_intrinsics, template_descriptors, template_pts_3d)
+print("Estimated R:", R.shape)  # [1, 3, 3]
+print("Confidence:", conf.item())`
+        },
+        {
+          name: 'OPFormer (CVPR 2026)',
+          desc: '端到端 Transformer 姿态估计器。使用 Multi-Template 融合跨视图模板特征，引入 NOCS 归一化物体坐标空间几何先验特征，并在 Correspondences Decoder 中以 Cross-Attention 稠密计算 2D 像素到 3D 物体点云的对应关系。',
+          code: `# OPFormer 端到端 Transformer 位姿回归
+from FoundationPose.opformer import OPFormer
+import torch
+
+model = OPFormer(feature_dim=128, num_templates=5)
+
+query_rgb = torch.randn(1, 3, 112, 112)
+query_depth = torch.randn(1, 1, 112, 112)
+query_intrinsics = torch.tensor([[[100.0, 0.0, 56.0], [0.0, 100.0, 56.0], [0.0, 0.0, 1.0]]])
+templates = torch.randn(1, 5, 3, 112, 112)
+
+R, t, nocs_map, pred_pts_3d = model(query_rgb, query_depth, query_intrinsics, templates)
+print("NOCS Map Shape:", nocs_map.shape)  # [1, 3, 56, 56]`
+        }
+      ]
+    }
   },
   {
     id: 'depth-anything',
     category: '深度估计',
-    name: 'Depth Anything v1/v2',
-    status: 'Ongoing',
-    summary: '单目深度预测',
-    description: '通用的单目三维深度预测模型，通过自监督训练和合成数据混训，在未知户外和户内场景中表现出极强的泛化深度预测力。'
+    name: 'Depth Anything v1 / v2 / Video / Prompt',
+    status: 'Available',
+    summary: '单目相对与绝对深度估计全系大模型',
+    description: '单目深度估计（MDE）领域的里程碑系列。从 V1 大规模半监督蒸馏，到 V2 依靠合成完美 Teacher 解决细节缺陷，再到 Video 视频时序一致性架构，以及利用稀疏 LiDAR 锚定的高保真度量深度头。',
+    githubReadme: 'https://github.com/zzy1130/Vision-Foundation-Model/blob/main/Depth-Anything/README.md',
+    details: {
+      introduction: 'Depth Anything 家族聚焦于相对深度和绝对度量深度。本项目实现了 V1 相对蒸馏、V2 合成数据微调、Video 的 ConvLSTM 时序一致性流动，以及 Prompt Depth Anything 接受稀疏 LiDAR 注入生成 4K 度量深度的全部架构。',
+      submodels: [
+        {
+          name: 'Depth Anything V1 (CVPR 2024)',
+          desc: '使用 DINOv2 ViT 编码器与 DPT 解码器，输出仿射不变的相对深度（视差），设计 L_ssi + L_gm 仿射不变损失，并通过对 62M 无标注互联网图片进行伪标签蒸馏来解锁极强泛化基础能力。',
+          code: `# Depth Anything V1 相对深度估计
+from DepthAnything.depth_anything_v1 import DepthAnythingV1
+import torch
+
+model = DepthAnythingV1(scale='S')
+model.eval()
+
+image = torch.randn(1, 3, 518, 518)
+with torch.no_grad():
+    depth = model(image)
+print("Relative depth:", depth.shape)  # [1, 1, 518, 518]`
+        },
+        {
+          name: 'Depth Anything V2 (NeurIPS 2024)',
+          desc: '针对 V1 的噪声限制，在三阶段框架下，使用 595K 高质量合成完美 Teacher 生成超清晰伪标签，极大地改善了轻薄结构与透明物体深度，并提供相机 FoV 条件化的绝对度量深度估计头。',
+          code: `# Depth Anything V2 度量深度估计
+from DepthAnything.depth_anything_v2 import DepthAnythingV2
+import torch
+
+model = DepthAnythingV2(scale='S', metric=True, max_depth=10.0)
+model.eval()
+
+image = torch.randn(1, 3, 518, 518)
+fov_rad = torch.tensor([1.22])   # 70° 水平视场角 (弧度)
+with torch.no_grad():
+    depth_metric = model(image, fov_rad=fov_rad)
+print("Metric depth meters range:", depth_metric.min().item(), "~", depth_metric.max().item())`
+        },
+        {
+          name: 'Video Depth Anything (CVPR 2025 Highlight)',
+          desc: '视频深度一致性架构。在 ViT 图像编码器后方交织引入 ConvLSTM，在帧间实现 2D 空间保留的时序信息传递，支持流式推理（Streaming Mode，逐帧恒定显存），从根本上消除了视频帧间的深度抖动。',
+          code: `# Video Depth Anything 时序流式推理
+from DepthAnything.video_depth_anything import VideoDepthAnything
+import torch
+
+model = VideoDepthAnything(scale='S')
+model.reset_temporal_state()
+
+for i in range(3):
+    frame = torch.randn(1, 3, 256, 256)
+    with torch.no_grad():
+        depth = model.forward_streaming(frame)
+    print(f"Frame {i} depth:", depth.shape)  # [1, 1, 256, 256]`
+        },
+        {
+          name: 'Prompt Depth Anything (CVPR 2025)',
+          desc: '稀疏 LiDAR 引导 of 4K 度量深度预测。使用低成本稀疏点阵（如 iPhone ARKit Lidar 32x24）作为度量锚提示，并在 DPT 解码器的 Fusion 块中加性融合，输出超高分辨率绝对深度，终结单视角尺度模糊。',
+          code: `# Prompt Depth Anything 提示深度估计
+from DepthAnything.prompt_depth_anything import PromptDepthAnything
+import torch
+
+model = PromptDepthAnything(scale='S', max_depth=10.0)
+model.eval()
+
+rgb = torch.randn(1, 3, 512, 512)
+lidar = torch.rand(1, 1, 24, 32) * 8.0  # 极稀疏 LiDAR 模拟
+lidar_mask = torch.rand(1, 1, 24, 32) > 0.9
+lidar = lidar * lidar_mask.float()
+
+with torch.no_grad():
+    metric_depth = model(rgb, lidar)
+print("4K Metric Depth:", metric_depth.shape)  # [1, 1, 512, 512]`
+        }
+      ]
+    }
   },
   {
     id: 'point-transformer',
     category: '点云表征',
-    name: 'Point Transformer v3',
-    status: 'Ongoing',
-    summary: '点云表征',
-    description: '通用的 3D 点云表征骨干网络，通过大规模稀疏自注意力机制在三维点云分割和分类任务中占据主流。'
+    name: 'Point Transformer v1 / v2 / v3 & Point-MAE',
+    status: 'Available',
+    summary: '点云局部注意力与 Morton 序列化表征骨干',
+    description: '3D 点云处理核心骨干网络。从 PTv1 的 KNN 向量自注意力，到 PTv2 的分组注意力与体素下采样优化，再到 PTv3 Morton 曲线序列化与规则 1D 窗口让 FlashAttention 进入点云，以及自监督 Patch 掩码重建。',
+    githubReadme: 'https://github.com/zzy1130/Vision-Foundation-Model/blob/main/PointTransformer/README.md',
+    details: {
+      introduction: 'Point Transformer 系列和 Point-MAE 为 3D 表征核心网络。本仓库提供了包括 PTv1 局部向量自注意力、PTv2 分组和体素划分、PTv3 空间 Morton 曲线 Z-order 排序及 Point-MAE 遮蔽 Chamfer 重建的完整实现。',
+      submodels: [
+        {
+          name: 'Point Transformer V1 (ICCV 2021)',
+          desc: '将自注意力机制应用到点云局部 KNN 邻域中，设计基于三维相对坐标变换的向量位置编码 PE。采用 Transition Down (KNN max pooling) 和 Transition Up (3-NN 插值) 的 U-Net 结构。',
+          code: `# Point Transformer V1 KNN 向量自注意力
+from PointTransformer.point_transformer_v1 import PointTransformerV1
+import torch
+
+model = PointTransformerV1(in_channels=6, num_classes=10, k=16)
+model.eval()
+
+xyz = torch.randn(2, 128, 3)
+features = torch.randn(2, 128, 6)
+
+logits = model(xyz, features)
+print("Logits shape:", logits.shape)  # [2, 128, 10]`
+        },
+        {
+          name: 'Point Transformer V2 (NeurIPS 2022)',
+          desc: '为减小开销，提出分组向量注意力 (Grouped Vector Attention)，各组内共享向量注意力权重；引入 PE 乘数因子动态调整；并采用体素网格划分下采样 (Partition-Based Pooling) 替代昂贵的最远点采样 FPS。',
+          code: `# Point Transformer V2 分组自注意力
+from PointTransformer.point_transformer_v2 import PointTransformerV2
+import torch
+
+model = PointTransformerV2(in_channels=6, num_classes=10, groups=4, k=16)
+model.eval()
+
+xyz = torch.randn(2, 128, 3)
+features = torch.randn(2, 128, 6)
+
+logits = model(xyz, features)
+print("Classified logits:", logits.shape)  # [2, 10]`
+        },
+        {
+          name: 'Point Transformer V3 (CVPR 2024)',
+          desc: '颠覆性的点云Morton Z曲线序列化方法。通过位交织排序将 3D 点云压缩为 1D 规则序列，在 1D Patch 内计算 Dense 注意力，可以直接调用 FlashAttention 内核，使运行速度和参数量级实现了跨越式提升。',
+          code: `# Point Transformer V3 Morton序列化
+from PointTransformer.point_transformer_v3 import PointTransformerV3
+import torch
+
+model = PointTransformerV3(in_channels=6, num_classes=10, channels=64, patch_size=32, num_heads=4)
+model.eval()
+
+xyz = torch.randn(2, 128, 3)
+features = torch.randn(2, 128, 6)
+
+logits = model(xyz, features)
+print("Morton sorted logits:", logits.shape)  # [2, 10]`
+        },
+        {
+          name: 'Point-MAE (ECCV 2022)',
+          desc: '3D 点云的 Masked Autoencoder 自监督学习。使用 FPS + KNN 构建点块，随机 Mask 屏蔽 60%-80% 块，利用浅层 Transformer Encoder 编码可见块，由 Decoder 将 masked token 重建，并计算两点集 Chamfer 距离损失。',
+          code: `# Point-MAE 点云自监督遮蔽重建
+from PointTransformer.point_mae import PointMAE
+import torch
+
+model = PointMAE(embed_dim=128, depth_enc=3, depth_dec=1, mask_ratio=0.6, k=16)
+model.eval()
+
+xyz = torch.randn(2, 256, 3)
+reconstructed, gt, masked_idx = model(xyz, target_num_patches=64)
+
+loss = model.compute_loss(reconstructed, gt)
+print("Chamfer Loss:", loss.item())`
+        }
+      ]
+    }
   },
   {
     id: 'stable-diffusion',
     category: '生成',
-    name: 'Stable Diffusion',
-    status: 'Ongoing',
-    summary: '生成目标图像或中间表征',
-    description: '潜在扩散模型大成者，除了图像生成之外，常作为强大的密集表征提取骨干用于下游任务。'
+    name: 'Stable Diffusion & DiT & 机器人 Policy',
+    status: 'Available',
+    summary: '从隐空间图像生成、DiT 到机器人动作扩散策略与流匹配决策',
+    description: '生成式大模型全景。涵盖基于 U-Net 交叉注意力的 Stable Diffusion (LDM)，基于 AdaLN 参数调制的 DiT，支持 3D VAE 与时空因子 attention 的 Video DiT 物理世界模拟，以及机器人长视界 Diffusion Policy 与 Straight CFM 极速决策流。',
+    githubReadme: 'https://github.com/zzy1130/Vision-Foundation-Model/blob/main/StableDiffusion/README.md',
+    details: {
+      introduction: '本目录实现了生成式基座与具身决策。包括隐空间 VAE 与去噪 U-Net，基于自适应层归一化（AdaLN）调制的 DiT 骨干网，时空 Video DiT，以及控制规控中用于避障多模态轨迹生成的 Diffusion Policy 与 5步积分快速流匹配 Flow Matching 轨迹规划器。',
+      submodels: [
+        {
+          name: 'Stable Diffusion / LDM',
+          desc: '隐空间扩散模型。包含下采样 8x 隐空间压缩的 VAE Encoder/Decoder 减小细节计算，使用含有 Cross-Attention 层的 U-Net 进行文本语义注入，并提供 DDPM/DDIM 确定性 ODE 积分加速采样调度器。',
+          code: `# Stable Diffusion VAE 编解码与去噪 U-Net
+from StableDiffusion.stable_diffusion import VAE, DenoisingUNet, DDPMScheduler
+import torch
+
+vae = VAE(in_channels=3, latent_dim=4)
+unet = DenoisingUNet(in_channels=4, model_channels=64, out_channels=4)
+scheduler = DDPMScheduler(num_train_timesteps=1000)
+
+img = torch.randn(1, 3, 256, 256)
+latent = vae.encode(img)  # [1, 4, 32, 32]
+noise = torch.randn_like(latent)
+t = torch.randint(0, 1000, (1,))
+
+noisy_latent = scheduler.add_noise(latent, noise, t)
+pred_noise = unet(noisy_latent, t)
+print("Pred noise shape:", pred_noise.shape)  # [1, 4, 32, 32]`
+        },
+        {
+          name: 'DiT (Diffusion Transformer)',
+          desc: '以 Transformer 替代传统去噪 U-Net。隐变量切分为 patches，采用 AdaLN (自适应层归一化) 注入时间和类别条件嵌入，对 LN 后的特征在通道上计算动态缩放与偏移，保证条件注入强度可调且极快。',
+          code: `# DiT AdaLN 条件调制
+from StableDiffusion.dit import DiffusionTransformer
+import torch
+
+model = DiffusionTransformer(input_size=32, patch_size=2, in_channels=4, hidden_size=128, depth=4, num_heads=4)
+model.eval()
+
+latents = torch.randn(1, 4, 32, 32)
+t = torch.tensor([500])
+y = torch.tensor([1])  # Class label
+
+out = model(latents, t, y)
+print("DiT Output shape:", out.shape)  # [1, 4, 32, 32]`
+        },
+        {
+          name: 'Video DiT (时空物理世界模型)',
+          desc: 'Sora 核心机制。时空因子化将视频 3D 张量在空间/时间轴交织处理。输入 frame sequence (B, T, C, H, W)，空间层提取 2D 特征，时间注意力层重塑为 (B·H·W, T, C) 进行帧间交叉检索，学习物理世界运动方程。',
+          code: `# Video DiT 时空混合自注意力
+from StableDiffusion.video_dit import VideoDiT
+import torch
+
+model = VideoDiT(input_size=32, patch_size=2, in_channels=4, hidden_size=128, depth=4, num_heads=4)
+model.eval()
+
+video_latents = torch.randn(1, 8, 4, 32, 32)  # [B, T=8, C, H, W]
+t = torch.tensor([100])
+text_cond = torch.randn(1, 10, 128)
+
+out = model(video_latents, t, text_cond)
+print("Video output:", out.shape)  # [1, 8, 4, 32, 32]`
+        },
+        {
+          name: 'Diffusion Policy',
+          desc: '机器人动作轨迹生成。将视觉和本体感受拼接作为 Conditioning，去噪解算 1D 时间轴上的动作序列。相比确定性行为克隆，动作扩散利用其连续建模能力完美解决了示教数据中的多模态动作决策瓶颈。',
+          code: `# 机器人动作轨迹生成 (Diffusion Policy)
+from StableDiffusion.diffusion_policy import DiffusionPolicy
+import torch
+
+model = DiffusionPolicy(action_dim=2, obs_dim=64, pred_horizon=16)
+model.eval()
+
+obs_cond = torch.randn(1, 64)
+noisy_actions = torch.randn(1, 16, 2)  # [B, Tp, action_dim]
+t = torch.tensor([10])
+
+pred_noise = model(noisy_actions, t, obs_cond)
+print("Pred action noise:", pred_noise.shape)  # [1, 16, 2]`
+        },
+        {
+          name: 'Flow Matching Policy',
+          desc: '流匹配动作规划。使用 Straight CFM（条件流匹配）在线性插值下构建直线的动作演化路径，网络直接预测瞬时速度场 v_theta。推理时只需 5 步 Euler 积分即可快速生成高保真轨迹，降噪延迟极低。',
+          code: `# 机器人流匹配动作规划 (Straight CFM)
+from StableDiffusion.flow_matching_policy import FlowMatchingPolicy
+import torch
+
+model = FlowMatchingPolicy(action_dim=2, obs_dim=64, pred_horizon=16)
+model.eval()
+
+obs_cond = torch.randn(1, 64)
+x_t = torch.randn(1, 16, 2)
+t = torch.tensor([0.5])
+
+# 预测粒子在当前时刻的直线运动速度
+velocity = model(x_t, t, obs_cond)
+print("Velocity field vector:", velocity.shape)  # [1, 16, 2]`
+        }
+      ]
+    }
   },
   {
     id: 'rdt-1b',
     category: '机器人 FM',
-    name: 'RDT-1B',
-    status: 'Ongoing',
-    summary: '双臂操作基础模型',
-    description: '双臂操作决策 Transformer，是具身智能控制领域十亿参数级的动作预测基础模型。'
+    name: 'RDT-1B (Robotics Diffusion Transformer)',
+    status: 'Available',
+    summary: '十亿参数多模态具身动作决策大模型',
+    description: '清华大学提出的机器人动作大模型骨干。在 128 维物理可解释的统一动作空间下，拼接 SigLIP 图像特征、T5-XXL 文本指令及当前关节 Proprioception 状态，基于大型 DiT 反向预测高精双臂协同控制。',
+    githubReadme: 'https://github.com/zzy1130/Vision-Foundation-Model/blob/main/StableDiffusion/README.md',
+    details: {
+      introduction: 'RDT-1B 解决了异构机器人结构下的动作训练难题。通过对齐物理一致的 128 维动作空间，将相机多视角（胸部相机 + 左右手腕相机）提取 of 1152 维视觉 token 和 4096 维语言口令交叉融合到大模型特征中，双臂决策能力强劲。',
+      submodels: [
+        {
+          name: 'RDT-1B Bimanual Controller',
+          desc: '异构机器人动作大模型。以 MLP 统一映射各维度，使用注意力掩码 Action Mask 消除冗余，在多层 DiT Block 堆叠的主序列上，交替进行多视角相机跨注意与口令语义注入，推理反向预测动作轨迹。',
+          code: `# RDT-1B 统一动作决策
+from StableDiffusion.rdt import RDTRunner
+import torch
+
+rdt_runner = RDTRunner(
+    action_dim=128, pred_horizon=64,
+    lang_token_dim=4096, img_token_dim=1152, state_token_dim=128
+)
+
+lang_cond = torch.randn(1, 32, 4096)  # T5-XXL tokens
+img_cond = torch.randn(1, 196, 1152)  # SigLIP tokens
+state_traj = torch.randn(1, 1, 128)   # Proprioception state
+
+# 计算训练 diffusion loss
+actions_gt = torch.randn(1, 64, 128)
+t = torch.tensor([[45]])
+loss = rdt_runner(actions_gt, t, lang_cond, img_cond, state_traj)
+print("Bimanual loss:", loss.item())
+
+# 推理去噪动作序列 (64步 Tp, 128维动作)
+pred_actions = rdt_runner.predict_action(lang_cond, img_cond, state_traj, num_inference_steps=10)
+print("Predicted actions traj:", pred_actions.shape)  # [1, 64, 128]`
+        }
+      ]
+    }
   },
   {
     id: 'siglip-ongoing',
